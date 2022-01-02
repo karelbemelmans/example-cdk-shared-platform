@@ -76,10 +76,14 @@ jobs:
         run: |
           pip install -r infrastructure/requirements.txt
 
-      - name: Synth CDK
+      - name: Bootstrap CDK
         working-directory: infrastructure
         run: |
           cdk bootstrap
+
+      - name: Synth CDK
+        working-directory: infrastructure
+        run: |
           cdk synth
         env:
           CDK_DEFAULT_REGION: ${{ secrets.TARGET_AWS_REGION }}
