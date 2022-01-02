@@ -71,6 +71,7 @@ jobs:
       - name: Synth CDK
         working-directory: infrastructure
         run: |
+          cdk bootstrap
           cdk synth
         env:
           CDK_DEFAULT_REGION: ${{ secrets.TARGET_AWS_REGION }}
@@ -78,4 +79,4 @@ jobs:
 
       - name: Show CDK diff
         run: |
-          cdk diff --app ./cdk.out --require-approval never "*"
+          cdk diff
