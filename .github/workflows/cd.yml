@@ -1,0 +1,48 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - release
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '16.3.0'
+
+      - name: Cache Node.js modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-node-
+            ${{ runner.OS }}-
+
+      - name: Install CDK and Gatsby
+        run: |
+          npm install -g aws-cdk
+
+      - name: Synth CDK
+        run: |
+          cdk synth --app infrastructure/app.py --output build/cdk.out
+        env:
+          CDK_DEFAULT_REGION: ${{ secrets.TARGET_AWS_REGION }}
+          CDK_DEFAULT_ACCOUNT: ${{ secrets.TARGET_AWS_ACCOUNT }}
+
+      - name: Deploy CDK
+        run: |
+          cdk deploy --app ./build/cdk.out --require-approval never "*"
