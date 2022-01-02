@@ -8,6 +8,14 @@ on:
   # run it during pull request
   pull_request:
 
+  # Allow manual triggers
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Why are you running a manual trigger?'
+        required: true
+        default: ''
+
 env:
   AWS_REGION: eu-north-1
 
