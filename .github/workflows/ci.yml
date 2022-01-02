@@ -1,9 +1,12 @@
-name: CD
+name: CI
 
 on:
+  # run it on push to the default repository branch
   push:
-    branches:
-      - release
+    branches: [main]
+
+  # run it during pull request
+  pull_request:
 
 jobs:
   build:
@@ -42,7 +45,3 @@ jobs:
         env:
           CDK_DEFAULT_REGION: ${{ secrets.TARGET_AWS_REGION }}
           CDK_DEFAULT_ACCOUNT: ${{ secrets.TARGET_AWS_ACCOUNT }}
-
-      - name: Deploy CDK
-        run: |
-          cdk deploy --app ./build/cdk.out --require-approval never "*"
