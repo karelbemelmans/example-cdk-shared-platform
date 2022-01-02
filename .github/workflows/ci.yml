@@ -32,7 +32,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.x
+          python-version: '3.x'
 
       # Configure caches
       - name: Cache Node.js modules
@@ -69,12 +69,13 @@ jobs:
           pip install -r infrastructure/requirements.txt
 
       - name: Synth CDK
+        working-directory: infrastructure
         run: |
-          cdk synth --app infrastructure/app.py --output build/cdk.out
+          cdk synth
         env:
           CDK_DEFAULT_REGION: ${{ secrets.TARGET_AWS_REGION }}
           CDK_DEFAULT_ACCOUNT: ${{ secrets.TARGET_AWS_ACCOUNT }}
 
       - name: Show CDK diff
         run: |
-          cdk diff --app ./build/cdk.out --require-approval never "*"
+          cdk diff --app ./cdk.out --require-approval never "*"
