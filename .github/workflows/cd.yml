@@ -14,57 +14,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
 
-      - name: Use Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: '16.3.0'
 
-      - name: Cache Node.js modules
-        uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.OS }}-node-
 
-      - name: Install CDK
-        run: |
-          npm install -g aws-cdk
 
-      - name: Install python virtualenv
-        working-directory: infrastructure
-        run: |
-          pip install --upgrade pip
-          python3 -m venv .venv
-          source .venv/bin/activate
-          echo "VIRTUAL ENV:" $VIRTUAL_ENV
-
-      - name: Cache Pip packages
-        uses: actions/cache@v2
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-
-      - name: Install pip requirements for CDK
-        working-directory: infrastructure
-        run: |
-          pip install -r requirements.txt
-
-      - name: Synth CDK
-        run: |
-          cdk synth --app infrastructure/app.py --output build/cdk.out
-        env:
-          CDK_DEFAULT_REGION: ${{ secrets.TARGET_AWS_REGION }}
-          CDK_DEFAULT_ACCOUNT: ${{ secrets.TARGET_AWS_ACCOUNT }}
 
       - name: Deploy CDK
         run: |

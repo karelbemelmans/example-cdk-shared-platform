@@ -88,7 +88,3 @@ jobs:
         env:
           CDK_DEFAULT_REGION: ${{ secrets.TARGET_AWS_REGION }}
           CDK_DEFAULT_ACCOUNT: ${{ secrets.TARGET_AWS_ACCOUNT }}
-
-      - name: Show CDK diff
-        run: |
-          cdk diff
