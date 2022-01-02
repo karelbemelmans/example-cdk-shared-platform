@@ -29,6 +29,12 @@ jobs:
         with:
           node-version: '16.3.0'
 
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+
+      # Configure caches
       - name: Cache Node.js modules
         uses: actions/cache@v2
         with:
@@ -36,18 +42,6 @@ jobs:
           key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.OS }}-node-
-
-      - name: Install CDK
-        run: |
-          npm install -g aws-cdk
-
-      - name: Install python virtualenv
-        working-directory: infrastructure
-        run: |
-          pip install --upgrade pip
-          python3 -m venv .venv
-          source .venv/bin/activate
-          echo "VIRTUAL ENV:" $VIRTUAL_ENV
 
       - name: Cache Pip packages
         uses: actions/cache@v2
@@ -57,10 +51,22 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
-      - name: Install pip requirements for CDK
-        working-directory: infrastructure
+
+      # The actual CDK stuff
+      - name: Install CDK
         run: |
-          pip install -r requirements.txt
+          npm install -g aws-cdk
+
+      - name: Install python virtualenv
+        run: |
+          pip install --upgrade pip
+          python3 -m venv .venv
+          source .venv/bin/activate
+          echo "VIRTUAL ENV:" $VIRTUAL_ENV
+
+      - name: Install pip requirements for CDK
+        run: |
+          pip install -r infrastructure/requirements.txt
 
       - name: Synth CDK
         run: |
