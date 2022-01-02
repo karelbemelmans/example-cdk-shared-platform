@@ -16,3 +16,5 @@ class InfrastructureStack(Stack):
 
         # Create an ECS cluster with all the defaults from CDK
         cluster = ecs.Cluster(self, "Cluster", vpc=vpc)
+
+        # TODO: Target groups, load balancers etc up to the service level
