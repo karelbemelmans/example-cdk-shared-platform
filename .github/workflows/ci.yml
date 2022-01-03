@@ -17,7 +17,7 @@ on:
         default: ''
 
 env:
-  AWS_REGION: eu-north-1
+  AWS_REGION: eu-west-1
 
 jobs:
   build:
