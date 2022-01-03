@@ -10,10 +10,12 @@ on:
     branches: [main]
 
 env:
+  DEPLOY_ENV: CI
   AWS_REGION: eu-west-1
 
 jobs:
   build:
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -65,7 +67,3 @@ jobs:
         working-directory: infrastructure
         run: |
           cdk synth
-        env:
-          CDK_DEFAULT_REGION: ${{ secrets.TARGET_AWS_REGION }}
-          CDK_DEFAULT_ACCOUNT: ${{ secrets.TARGET_AWS_ACCOUNT }}
-          DEPLOY_ENV: CI
