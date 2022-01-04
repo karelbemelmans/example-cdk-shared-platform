@@ -63,9 +63,17 @@ jobs:
         run: |
           pip install -r infrastructure/requirements.txt
 
-      - name: Bootstrap, diff and deploy CDK
+      - name: Bootstrap CDK
         working-directory: infrastructure
         run: |
           cdk bootstrap
+
+      - name: CDK Diff
+        working-directory: infrastructure
+        run: |
           cdk diff
+
+      - name: Deploy CDK
+        working-directory: infrastructure
+        run: |
           cdk deploy --require-approval never "*"
