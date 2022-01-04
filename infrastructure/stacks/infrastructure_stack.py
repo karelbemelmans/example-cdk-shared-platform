@@ -15,15 +15,13 @@ class InfrastructureStack(cdk.Stack):
 
         # Create a VPC with all the defaults CDK uses
         vpc = ec2.Vpc(self, "PC", max_azs=3)
-        self.output_props['vpc'] = vpc
 
         # Create an ECS cluster with all the defaults from CDK
         cluster = ecs.Cluster(self, "Cluster", vpc=vpc)
-        self.output_props['cluster'] = cluster
 
         # Create the load balancer
         alb = elbv2.ApplicationLoadBalancer(self, "ALB", vpc=vpc, internet_facing=True)
-        self.output_props['alb'] = alb
+        cdk.CfnOutput(self, "ALBArn", value=alb.load_balancer_arn)
 
         # Create the listeners for the ALB
         listener_http = alb.add_listener("HttpListener",
@@ -31,7 +29,7 @@ class InfrastructureStack(cdk.Stack):
             port=80,
             default_action=elbv2.ListenerAction.fixed_response(status_code=404),
         )
-        self.output_props['listener_http'] = listener_http
+        cdk.CfnOutput(self, "ListenerHTTPArn", value=listener_http.listener_arn)
 
         # TODO: https listener
 
@@ -45,7 +43,3 @@ class InfrastructureStack(cdk.Stack):
         # - service and task definition
         # - ALB rules
 
-    # pass objects to another stack
-    @property
-    def outputs(self):
-        return self.output_props
