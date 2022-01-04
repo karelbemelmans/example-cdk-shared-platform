@@ -1,4 +1,4 @@
-name: CD - Development
+name: CD - Production
 
 on:
   release:
