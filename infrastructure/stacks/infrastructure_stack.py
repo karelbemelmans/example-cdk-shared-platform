@@ -14,7 +14,7 @@ class InfrastructureStack(cdk.Stack):
         self.output_props = {}
 
         # Create a VPC with all the defaults CDK uses
-        vpc = ec2.Vpc(self, "PC", max_azs=3)
+        vpc = ec2.Vpc(self, "PC", max_azs=2)
 
         # Create an ECS cluster with all the defaults from CDK
         cluster = ecs.Cluster(self, "Cluster", vpc=vpc)
