@@ -2,7 +2,8 @@ name: CD - Development
 
 on:
   push:
-    branches: [main]
+    branches:
+      - 'main'
 env:
   CDK_DEFAULT_REGION: ${{ secrets.TARGET_AWS_REGION }}
   CDK_DEFAULT_ACCOUNT: ${{ secrets.TARGET_AWS_ACCOUNT }}
