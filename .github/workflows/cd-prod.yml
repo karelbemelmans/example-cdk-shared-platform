@@ -1,23 +1,22 @@
 name: CD - Development
 
 on:
-  push:
-    branches:
-      - 'main'
+  release:
+    types: [published]
 
 env:
   CDK_DEFAULT_REGION: ${{ secrets.TARGET_AWS_REGION }}
   CDK_DEFAULT_ACCOUNT: ${{ secrets.TARGET_AWS_ACCOUNT }}
-  DEPLOY_ENV: Development
+  DEPLOY_ENV: Production
   AWS_REGION: eu-west-1
 
 jobs:
   build-and-deploy:
-    name: Build and Deploy CDK stack - Development
+    name: Build and Deploy CDK stack - Production
     runs-on: ubuntu-latest
     environment:
-      name: Development
-      url: https://development.example.com
+      name: Production
+      url: https://production.example.com
     steps:
       - uses: actions/checkout@v2
 
