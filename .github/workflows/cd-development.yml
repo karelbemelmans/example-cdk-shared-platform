@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: Development
-      url: https://${ROUTE53_HOSTED_NAME}.${ROUTE53_HOSTED_ZONE}
+      url: https://platform.karel-playground-sandbox.kry.se
     steps:
       - uses: actions/checkout@v2
 
