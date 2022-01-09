@@ -48,13 +48,18 @@ class InfrastructureStack(cdk.Stack):
         )
 
         # Create the listeners for the ALB
-        listener_http = alb.add_listener("HttpListener",
+        alb.add_listener("HttpListener",
             open=True,
             port=80,
-            default_action=elbv2.ListenerAction.fixed_response(status_code=404),
+            default_action=elbv2.ListenerAction.redirect(protocol="https", port="443")
         )
 
-        # TODO: https listener
+        listener_https = alb.add_listener("HttpsListener",
+            open=True,
+            port=443,
+            default_action=elbv2.ListenerAction.fixed_response(status_code=404),
+            certificates=[certificate],
+        )
 
         # Security groups for the ALB
         alb_sg = ec2.SecurityGroup(self, "ALBSecurityGroup", vpc=vpc, allow_all_outbound=True)
@@ -69,4 +74,4 @@ class InfrastructureStack(cdk.Stack):
 
         # Outputs
         cdk.CfnOutput(self, "ALBArn", value=alb.load_balancer_arn)
-        cdk.CfnOutput(self, "ListenerHTTPArn", value=listener_http.listener_arn)
+        cdk.CfnOutput(self, "ListenerHTTPArn", value=listener_https.listener_arn)
