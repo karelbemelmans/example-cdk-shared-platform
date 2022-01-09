@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: Development
-      url: https://development.example.com
+      url: https://${ROUTE53_HOSTED_NAME}.${ROUTE53_HOSTED_ZONE}
     steps:
       - uses: actions/checkout@v2
 
