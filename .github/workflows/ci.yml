@@ -63,9 +63,8 @@ jobs:
 
       - name: Install pip requirements for CDK
         run: |
-          pip install -r infrastructure/requirements.txt
+          pip install -r requirements.txt
 
       - name: Synth CDK
-        working-directory: infrastructure
         run: |
           cdk synth
