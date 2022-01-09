@@ -1,8 +1,11 @@
 import aws_cdk as cdk
 
+from aws_cdk import aws_certificatemanager as acm
 from aws_cdk import aws_ec2 as ec2
 from aws_cdk import aws_ecs as ecs
 from aws_cdk import aws_elasticloadbalancingv2 as elbv2
+from aws_cdk import aws_route53 as route53
+from aws_cdk import aws_route53_targets as targets
 from constructs import Construct
 
 
@@ -11,7 +14,10 @@ class InfrastructureStack(cdk.Stack):
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        self.output_props = {}
+        # DNS domain_name for our service. We need
+        hosted_zone = cdk.CfnParameter(self, "hostedZone", type="String", default="example.org")
+        hosted_zone_id = cdk.CfnParameter(self, "hostedZoneId", type="String", default="")
+        hosted_name = cdk.CfnParameter(self, "hostedName", type="String", default="api")
 
         # Create a VPC with all the defaults CDK uses
         vpc = ec2.Vpc(self, "PC", max_azs=2)
@@ -19,9 +25,27 @@ class InfrastructureStack(cdk.Stack):
         # Create an ECS cluster with all the defaults from CDK
         cluster = ecs.Cluster(self, "Cluster", vpc=vpc)
 
+        # Load our already existing Route53 zone
+        route53_zone = route53.HostedZone.from_hosted_zone_attributes(self, "HostedZone",
+            hosted_zone_id=hosted_zone_id.value_as_string,
+            zone_name=hosted_zone.value_as_string,
+        )
+
         # Create the load balancer
         alb = elbv2.ApplicationLoadBalancer(self, "ALB", vpc=vpc, internet_facing=True)
-        cdk.CfnOutput(self, "ALBArn", value=alb.load_balancer_arn)
+
+        # DNS entry for our load balancer
+        route53.ARecord(self, "AliasRecord",
+            zone=route53_zone,
+            record_name=hosted_name.value_as_string,
+            target=route53.RecordTarget.from_alias(targets.LoadBalancerTarget(alb)),
+        )
+
+        # SSL Certificate
+        certificate = acm.Certificate(self, "Certificate",
+            domain_name=f"{hosted_name.value_as_string}.{hosted_zone.value_as_string}",
+            validation=acm.CertificateValidation.from_dns(route53_zone)
+        )
 
         # Create the listeners for the ALB
         listener_http = alb.add_listener("HttpListener",
@@ -29,7 +53,6 @@ class InfrastructureStack(cdk.Stack):
             port=80,
             default_action=elbv2.ListenerAction.fixed_response(status_code=404),
         )
-        cdk.CfnOutput(self, "ListenerHTTPArn", value=listener_http.listener_arn)
 
         # TODO: https listener
 
@@ -42,4 +65,8 @@ class InfrastructureStack(cdk.Stack):
         # - target groups
         # - service and task definition
         # - ALB rules
+        # ...and more if needed
 
+        # Outputs
+        cdk.CfnOutput(self, "ALBArn", value=alb.load_balancer_arn)
+        cdk.CfnOutput(self, "ListenerHTTPArn", value=listener_http.listener_arn)
