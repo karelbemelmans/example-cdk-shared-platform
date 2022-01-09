@@ -79,6 +79,6 @@ jobs:
       - name: Deploy CDK
         run: |
           cdk deploy --require-approval never "*" \
-            --parameters hostedZone={$ROUTE53_HOSTED_ZONE} \
+            --parameters hostedZone=${ROUTE53_HOSTED_ZONE} \
             --parameters hostedZoneId=${ROUTE53_HOSTED_ZONE_ID} \
             --parameters hostedName=${ROUTE53_HOSTED_NAME}
