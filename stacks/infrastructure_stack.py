@@ -51,7 +51,7 @@ class InfrastructureStack(cdk.Stack):
         alb.add_listener("HttpListener",
             open=True,
             port=80,
-            default_action=elbv2.ListenerAction.redirect(protocol="https", port="443")
+            default_action=elbv2.ListenerAction.redirect(protocol="HTTPS", port="443")
         )
 
         listener_https = alb.add_listener("HttpsListener",
