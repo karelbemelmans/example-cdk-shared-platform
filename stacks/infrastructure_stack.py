@@ -11,7 +11,7 @@ from constructs import Construct
 
 class InfrastructureStack(cdk.Stack):
 
-    def __init__(self, scope: Construct, id: str, props, **kwargs) -> None:
+    def __init__(self, scope: Construct, id: str, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
 
         # DNS domain_name for our service. We need
@@ -66,14 +66,6 @@ class InfrastructureStack(cdk.Stack):
         alb_sg.add_ingress_rule(ec2.Peer.any_ipv4(), ec2.Port.tcp(80), "Allow http traffic")
         alb_sg.add_ingress_rule(ec2.Peer.any_ipv4(), ec2.Port.tcp(443), "Allow https traffic")
 
-        # Outputs to be used by other stacks
-        self.output_props = props.copy()
-        self.output_props['vpc'] = vpc
-        self.output_props['cluster'] = cluster
-        self.output_props['alb'] = alb
-        self.output_props['listener_https'] = listener_https
-
-    @property
-    def outputs(self):
-        return self.output_props
-
+        # Outputs
+        cdk.CfnOutput(self, "ALBArn", value=alb.load_balancer_arn, description="Application Load Balancer ARN")
+        cdk.CfnOutput(self, "ListenerHTTPSArn", value=listener_https.listener_arn, description="HTTPS Listener ARN")
