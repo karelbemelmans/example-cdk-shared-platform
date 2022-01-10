@@ -72,9 +72,13 @@ jobs:
         run: |
           cdk diff
 
-      - name: Deploy CDK
+      - name: Deploy CDK - Infrastructure Stack
         run: |
-          cdk deploy --require-approval never "*" \
+          cdk deploy --require-approval never Infrastructure \
             --parameters hostedZone=${ROUTE53_HOSTED_ZONE} \
             --parameters hostedZoneId=${ROUTE53_HOSTED_ZONE_ID} \
             --parameters hostedName=${ROUTE53_HOSTED_NAME}
+
+      - name: Deploy CDK - All Platform Component Stacks
+        run: |
+          cdk deploy --require-approval never "PlatformComponent-*"
