@@ -73,5 +73,5 @@ class InfrastructureStack(cdk.Stack):
         # ...and more if needed
 
         # Outputs
-        cdk.CfnOutput(self, "ALBArn", value=alb.load_balancer_arn)
-        cdk.CfnOutput(self, "ListenerHTTPArn", value=listener_https.listener_arn)
+        cdk.CfnOutput(self, "ALBArn", value=alb.load_balancer_arn, description="Application Load Balancer ARN")
+        cdk.CfnOutput(self, "ListenerHTTPSArn", value=listener_https.listener_arn, description="HTTPS Listener ARN")
