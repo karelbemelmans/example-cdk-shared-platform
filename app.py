@@ -25,7 +25,7 @@ for c in components:
     props = infra.outputs.copy()
     props['component'] = c
 
-    cs = ComponentStack(app, f"PlatformComponent-{c['name']}", props, description=f"Component: {c['name']}")
+    cs = ComponentStack(app, f"PC-{c['name']}", props, description=f"Component: {c['name']}")
     cs.add_dependency(infra)
 
 app.synth()
