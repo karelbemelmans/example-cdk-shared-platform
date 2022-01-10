@@ -54,7 +54,7 @@ class InfrastructureStack(cdk.Stack):
             default_action=elbv2.ListenerAction.redirect(protocol="HTTPS", port="443")
         )
 
-        listener_https = alb.add_listener("HttpsListener",
+        listener = alb.add_listener("HttpsListener",
             open=True,
             port=443,
             default_action=elbv2.ListenerAction.fixed_response(status_code=404),
@@ -69,4 +69,4 @@ class InfrastructureStack(cdk.Stack):
         # Outputs
         cdk.CfnOutput(self, "ClusterName", value=cluster.cluster_name, description="Cluster Name", export_name="PlatformClusterName")
         cdk.CfnOutput(self, "ALBArn", value=alb.load_balancer_arn, description="Application Load Balancer ARN", export_name="PlatformALB")
-        cdk.CfnOutput(self, "ListenerHTTPSArn", value=listener_https.listener_arn, description="HTTPS Listener ARN", export_name="PlatformListenerHTTPS")
+        cdk.CfnOutput(self, "ListenerArn", value=listener.listener_arn, description="Listener ARN", export_name="PlatformListener")
