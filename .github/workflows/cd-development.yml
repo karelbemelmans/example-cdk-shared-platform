@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: Development
-      url: https://platform.karel-playground-sandbox.kry.se
+      url: https://platform-dev.karel-playground-sandbox.kry.se
     steps:
       - uses: actions/checkout@v2
 
