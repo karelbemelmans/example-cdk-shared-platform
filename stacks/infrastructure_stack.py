@@ -67,7 +67,6 @@ class InfrastructureStack(cdk.Stack):
         alb_sg.add_ingress_rule(ec2.Peer.any_ipv4(), ec2.Port.tcp(443), "Allow https traffic")
 
         # Outputs
-        cdk.CfnOutput(self, "VPCName", value=vpc, description="VPC Name", export_name="PlatformVPCName")
         cdk.CfnOutput(self, "ClusterName", value=cluster.cluster_name, description="Cluster Name", export_name="PlatformClusterName")
         cdk.CfnOutput(self, "ALBArn", value=alb.load_balancer_arn, description="Application Load Balancer ARN", export_name="PlatformALB")
         cdk.CfnOutput(self, "ListenerArn", value=listener.listener_arn, description="Listener ARN", export_name="PlatformListener")
