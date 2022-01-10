@@ -66,6 +66,28 @@ class InfrastructureStack(cdk.Stack):
         alb_sg.add_ingress_rule(ec2.Peer.any_ipv4(), ec2.Port.tcp(80), "Allow http traffic")
         alb_sg.add_ingress_rule(ec2.Peer.any_ipv4(), ec2.Port.tcp(443), "Allow https traffic")
 
+        # We add a simple "ECS Sample" container on a test path
+        task_definition = ecs.FargateTaskDefinition(self, "TaskDef")
+
+        task_definition.add_container("DefaultContainer",
+            image=ecs.ContainerImage.from_registry("amazon/amazon-ecs-sample"),
+            memory_limit_mi_b=512
+        )
+
+        sample_service = ecs.FargateService(self, "SampleService",
+            cluster=cluster,
+            task_definition=task_definition,
+            circuit_breaker=ecs.DeploymentCircuitBreaker(rollback=True),
+        )
+
+        target_group = listener_https.add_targets("ECSSample",
+            port=80,
+            targets=[sample_service],
+            conditions=[
+                elbv2.ListenerCondition.path_patterns('/ecs-sample')
+            ],
+        )
+
         # Everything else about the ECS setup will be done in components:
         # - target groups
         # - service and task definition
