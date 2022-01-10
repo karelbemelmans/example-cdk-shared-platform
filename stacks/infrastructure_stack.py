@@ -69,10 +69,12 @@ class InfrastructureStack(cdk.Stack):
         # We add a simple "ECS Sample" container on a test path
         task_definition = ecs.FargateTaskDefinition(self, "TaskDef")
 
-        task_definition.add_container("DefaultContainer",
+        container = task_definition.add_container("DefaultContainer",
             image=ecs.ContainerImage.from_registry("amazon/amazon-ecs-sample"),
-            memory_limit_mi_b=512
+            memory_limit_mib=512
         )
+
+        container.add_port_mappings(ecs.PortMapping(container_port=80))
 
         sample_service = ecs.FargateService(self, "SampleService",
             cluster=cluster,
@@ -84,8 +86,9 @@ class InfrastructureStack(cdk.Stack):
             port=80,
             targets=[sample_service],
             conditions=[
-                elbv2.ListenerCondition.path_patterns('/ecs-sample')
+                elbv2.ListenerCondition.path_patterns(['/ecs-sample'])
             ],
+            priority=10,
         )
 
         # Everything else about the ECS setup will be done in components:
