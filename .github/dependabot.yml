@@ -6,6 +6,6 @@
 version: 2
 updates:
   - package-ecosystem: "pip"
-    directory: "/infrastructure/"
+    directory: "/"
     schedule:
       interval: "daily"
