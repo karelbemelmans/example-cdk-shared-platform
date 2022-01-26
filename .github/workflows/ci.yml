@@ -57,7 +57,7 @@ jobs:
 
       - name: Install CDK
         run: |
-          npm install -g aws-cdk
+          npm install -g aws-cdk@2.8.0
 
       - name: Install python virtualenv
         run: |
