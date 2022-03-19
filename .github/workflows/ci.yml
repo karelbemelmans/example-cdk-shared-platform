@@ -59,12 +59,6 @@ jobs:
         run: |
           npm install -g aws-cdk@2.8.0
 
-      - name: Install python virtualenv
-        run: |
-          pip install --upgrade pip
-          python3 -m venv .venv
-          source .venv/bin/activate
-
       - name: Install pip requirements for CDK
         run: |
           pip install -r requirements.txt
